@@ -67,6 +67,13 @@ def main() -> None:
         hi_str = str(hi) if hi < 999 else "inf"
         print(f"  {lo}-{hi_str} annotations/tile -> keep {prob:.0%}")
 
+    print("Generating directory structure and .gitkeep files...")
+    for split in ["train", "val", "eval"]:
+        for data_type in ["images", "labels"]:
+            dir_path = OUTPUT_DIR / data_type / split
+            dir_path.mkdir(parents=True, exist_ok=True)
+            (dir_path / ".gitkeep").touch()
+
     # train (sparse + exhaustive)
     n_tr1, ctr_tr1, den_tr1, lbl_tr1 = tile_and_write(
         {k: v for k, v in sparse_train.items() if k not in exh_t},

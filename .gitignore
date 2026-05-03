@@ -7,3 +7,8 @@ dataset/**/*.txt
 dataset/**/*.TXT
 
 __pycache__/
+
+dataset/deepbee-processed-yolo/images/*/*
+dataset/deepbee-processed-yolo/labels/*/*
+!dataset/deepbee-processed-yolo/images/*/.gitkeep
+!dataset/deepbee-processed-yolo/labels/*/.gitkeep
