@@ -47,7 +47,7 @@ CLASS_MAP = {
     "honey":        2,
     "larves":       3, "larva":        3, "larvae":      3,
     "nectar":       4,
-    "other":        5, "empty":        5, "dontcare":    5,
+    "other":        5, 
     "pollen":       6,
 }
 
