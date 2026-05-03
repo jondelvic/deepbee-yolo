@@ -5,3 +5,5 @@ dataset/**/*.PNG
 
 dataset/**/*.txt
 dataset/**/*.TXT
+
+__pycache__/

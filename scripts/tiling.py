@@ -23,6 +23,7 @@ def tile_and_write(
     split_name:         str,
     rng:                random.Random,
     use_density_filter: bool = True,
+    prefix:             str = "",
 ) -> tuple[int, Counter, Counter, list[Path]]:
     """
     Slide a TILE_SIZE×TILE_SIZE window over each source image, convert
@@ -163,7 +164,7 @@ def tile_and_write(
                         continue
 
                 # ── write tile to disk ────────────────────────────────────────
-                tile_fname = f"{stem}_x{x0}_y{y0}"
+                tile_fname = f"{prefix}{stem}_x{x0}_y{y0}"
                 tile_img   = img[y_min:y_max, x_min:x_max]
                 tile_path  = out_img_folder / f"{tile_fname}.jpg"
                 cv2.imwrite(str(tile_path), tile_img, [cv2.IMWRITE_JPEG_QUALITY, 95])

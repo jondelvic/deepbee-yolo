@@ -8,7 +8,7 @@ from scripts.config import CLASS_MAP, DEFAULT_RADIUS_TRAIN   # or relative impor
 # Because no per-cell radius is available, DEFAULT_RADIUS_TRAIN is used with a ±4 px uniform jitter per annotation. See module config for full rationale.
 
 # Returns a dict mapping image_nam to list of annotation dicts: {"x": float, "y": float, "r": float, "class_id": int}
-def parse_train_csv(csv_path: Path) -> dict[str, list[dict]]:
+def parse_train_csv(csv_path: Path, rng: random.Random) -> dict[str, list[dict]]:
     df = pd.read_csv(
         csv_path,
         header=None,
@@ -26,7 +26,7 @@ def parse_train_csv(csv_path: Path) -> dict[str, list[dict]]:
             continue
 
         # jitter (for reproducibility) based from natural CHT variance from deepbee source code
-        jitter = random.uniform(-4.0, 4.0)
+        jitter = rng.uniform(-4.0, 4.0)
         by_image[row["image_name"].strip()].append({
             "x":        float(row["x"]),
             "y":        float(row["y"]),

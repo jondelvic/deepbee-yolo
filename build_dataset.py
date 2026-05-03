@@ -36,9 +36,11 @@ def main() -> None:
         print(f"Removing existing {OUTPUT_DIR} ...")
         shutil.rmtree(OUTPUT_DIR)
 
+    rng = random.Random(RANDOM_SEED)
+
     # --- parse annotations ---
     print("Parsing CSVs ...")
-    sparse_all = parse_train_csv(TRAIN_CSV)
+    sparse_all = parse_train_csv(TRAIN_CSV, rng)
     exhaustive = parse_test_csv(TEST_CSV)
     print(f"  sparse images : {len(sparse_all)}")
     print(f"  exhaustive images : {len(exhaustive)}")
@@ -70,12 +72,12 @@ def main() -> None:
         {k: v for k, v in sparse_train.items() if k not in exh_t},
         RAW_IMAGES_TRAIN,
         OUTPUT_DIR / "images/train", OUTPUT_DIR / "labels/train",
-        "train (sparse)", rng, use_density_filter=True,
+        "train (sparse)", rng, use_density_filter=True, prefix="sparse_"
     )
     n_tr2, ctr_tr2, den_tr2, lbl_tr2 = tile_and_write(
         exh_t, RAW_IMAGES_TEST,
         OUTPUT_DIR / "images/train", OUTPUT_DIR / "labels/train",
-        "train (exhaustive)", rng, use_density_filter=False,
+        "train (exhaustive)", rng, use_density_filter=False, prefix="exh_"
     )
     n_tr   = n_tr1 + n_tr2
     ctr_tr = ctr_tr1 + ctr_tr2
@@ -87,12 +89,12 @@ def main() -> None:
         {k: v for k, v in sparse_val.items() if k not in exh_v},
         RAW_IMAGES_TRAIN,
         OUTPUT_DIR / "images/val", OUTPUT_DIR / "labels/val",
-        "val (sparse)", rng, use_density_filter=True,
+        "val (sparse)", rng, use_density_filter=True, prefix="sparse_"
     )
     n_vl2, ctr_vl2, den_vl2, lbl_vl2 = tile_and_write(
         exh_v, RAW_IMAGES_TEST,
         OUTPUT_DIR / "images/val", OUTPUT_DIR / "labels/val",
-        "val (exhaustive)", rng, use_density_filter=False,
+        "val (exhaustive)", rng, use_density_filter=False, prefix="exh_"
     )
     n_vl   = n_vl1 + n_vl2
     ctr_vl = ctr_vl1 + ctr_vl2
@@ -103,7 +105,7 @@ def main() -> None:
     n_ev, ctr_ev, den_ev, lbl_ev = tile_and_write(
         exh_eval, RAW_IMAGES_TEST,
         OUTPUT_DIR / "images/eval", OUTPUT_DIR / "labels/eval",
-        "eval (exhaustive)", rng, use_density_filter=False,
+        "eval (exhaustive)", rng, use_density_filter=False, prefix="exh_"
     )
 
     # --- audit ---

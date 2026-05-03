@@ -1,10 +1,12 @@
 from pathlib import Path
 
-RAW_IMAGES_TRAIN = Path("../dataset/raw/train/images")
-RAW_IMAGES_TEST  = Path("../dataset/raw/test/images")
-TRAIN_CSV        = Path("../dataset/raw/labels_train.csv")
-TEST_CSV         = Path("../dataset/raw/labels_test.csv")
-OUTPUT_DIR       = Path("../dataset/processed")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+RAW_IMAGES_TRAIN = PROJECT_ROOT / "dataset" / "raw" / "train" / "images"
+RAW_IMAGES_TEST  = PROJECT_ROOT / "dataset" / "raw" / "test" / "images"
+TRAIN_CSV        = PROJECT_ROOT / "dataset" / "raw" / "labels_train.csv"
+TEST_CSV         = PROJECT_ROOT / "dataset" / "raw" / "labels_test.csv"
+OUTPUT_DIR       = PROJECT_ROOT / "dataset" / "deepbee-processed-yolo"
 
 # handpicked images for final benchmark
 EVAL_IMAGE_NAMES = {
