@@ -12,3 +12,5 @@ dataset/deepbee-processed-yolo/images/*/*
 dataset/deepbee-processed-yolo/labels/*/*
 !dataset/deepbee-processed-yolo/images/*/.gitkeep
 !dataset/deepbee-processed-yolo/labels/*/.gitkeep
+
+dataset/*.zip
