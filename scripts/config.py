@@ -40,26 +40,24 @@ RANDOM_SEED = 42
 AUDIT_SAMPLES_PER_SPLIT = 16  # FOR AUDIT: tiles drawn into each sample mosaic
 
 # CLASS MAPPING
-CLASS_NAMES = ["capped", "eggs", "honey", "larves", "nectar", "other", "pollen"] # for yaml output
+CLASS_NAMES = ["capped", "eggs", "larves", "other", "pollen"] # for yaml output
 
 # raw label strings from both train/test csv for unified class id yaml
 CLASS_MAP = {
     "capped":       0, "capped brood": 0,
     "eggs":         1, "egg":          1,
-    "honey":        2,
-    "larves":       3, "larva":        3, "larvae":      3,
-    "nectar":       4,
-    "other":        5, 
-    "pollen":       6,
+    # honey removed
+    "larves":       2, "larva":        2, "larvae":      2,
+    # nectar removed
+    "other":        3,
+    "pollen":       4,
 }
 
 # for AUDIT ONLY mosaic visualization per class 
 CLASS_COLORS_BGR = [
     (255, 180,   0),   # 0 capped  – blue
     (  0, 255, 255),   # 1 eggs    – yellow
-    ( 50, 200,  50),   # 2 honey   – green
-    (255,  80, 200),   # 3 larves  – pink
-    (  0, 165, 255),   # 4 nectar  – orange
-    (180, 180, 180),   # 5 other   – grey
-    (120,  60, 255),   # 6 pollen  – purple
+    (255,  80, 200),   # 2 larves  – pink
+    (180, 180, 180),   # 3 other   – grey
+    (120,  60, 255),   # 4 pollen  – purple
 ]
