@@ -143,10 +143,8 @@ def tile_and_write(
                     bw_clipped = min(raw_w, 2 * cx, 2 * (1 - cx))
                     bh_clipped = min(raw_h, 2 * cy, 2 * (1 - cy))
 
-                    # center must be >= 16px inside the tile. this ensures cell's center is AT LEAST 16px inside tile boundaries
-                    # bw_clipped (left/right)
-                    # bh_clipped (top/bottom)
-                    if bw_clipped > 0.05 and bh_clipped > 0.05:
+                    # Discard boxes clipped to less than 1% of tile dimension
+                    if bw_clipped > 0.01 and bh_clipped > 0.01:
                         tile_lines.append(
                             f"{cid} {cx:.6f} {cy:.6f} {bw_clipped:.6f} {bh_clipped:.6f}"
                         )
