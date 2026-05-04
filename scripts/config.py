@@ -6,7 +6,7 @@ RAW_IMAGES_TRAIN = PROJECT_ROOT / "dataset" / "raw" / "train" / "images"
 RAW_IMAGES_TEST  = PROJECT_ROOT / "dataset" / "raw" / "test" / "images"
 TRAIN_CSV        = PROJECT_ROOT / "dataset" / "raw" / "labels_train.csv"
 TEST_CSV         = PROJECT_ROOT / "dataset" / "raw" / "labels_test.csv"
-OUTPUT_DIR       = PROJECT_ROOT / "dataset" / "deepbee-processed-yolo"
+OUTPUT_DIR       = PROJECT_ROOT / "dataset" / "deepbee-processed-yolo-dropped-honeynectar"
 
 # handpicked images for final benchmark
 EVAL_IMAGE_NAMES = {
