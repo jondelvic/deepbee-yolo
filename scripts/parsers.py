@@ -2,12 +2,18 @@ from pathlib import Path
 from collections import defaultdict
 import random
 import pandas as pd
-from scripts.config import CLASS_MAP, DEFAULT_RADIUS_TRAIN   # or relative import
+from scripts.config import CLASS_MAP, DEFAULT_RADIUS_TRAIN
 
-# parse the sparse train csv (the one with no header and no radius column)
-# Because no per-cell radius is available, DEFAULT_RADIUS_TRAIN is used with a ±4 px uniform jitter per annotation. See module config for full rationale.
+# parse the sparse train csv (no header, no radius column)
+# DEFAULT_RADIUS_TRAIN is used with ±4 px uniform jitter per annotation.
+#
+# CLASS_MAP entries with value None are intentionally excluded classes
+# (honey, nectar, pollen). These are silently skipped — they are NOT
+# reported as unknown. Only strings absent from CLASS_MAP entirely are
+# flagged, as those indicate a genuine data/mapping problem.
+#
+# Returns: {image_name: [{"x", "y", "r", "class_id"}, ...]}
 
-# Returns a dict mapping image_nam to list of annotation dicts: {"x": float, "y": float, "r": float, "class_id": int}
 def parse_train_csv(csv_path: Path, rng: random.Random) -> dict[str, list[dict]]:
     df = pd.read_csv(
         csv_path,
@@ -16,16 +22,21 @@ def parse_train_csv(csv_path: Path, rng: random.Random) -> dict[str, list[dict]]
         dtype=str,
     )
     by_image: dict[str, list[dict]] = defaultdict(list)
-    unknown: set[str] = set()
+    unknown: set[str] = set()    # strings not in CLASS_MAP at all
+    excluded: set[str] = set()   # strings in CLASS_MAP but mapped to None
 
     for _, row in df.iterrows():
-        cls_raw  = row["class_name"].strip().lower()
-        class_id = CLASS_MAP.get(cls_raw)
-        if class_id is None:
+        cls_raw = row["class_name"].strip().lower()
+
+        if cls_raw not in CLASS_MAP:
             unknown.add(cls_raw)
             continue
 
-        # jitter (for reproducibility) based from natural CHT variance from deepbee source code
+        class_id = CLASS_MAP[cls_raw]
+        if class_id is None:
+            excluded.add(cls_raw)   # intentionally dropped — no warning
+            continue
+
         jitter = rng.uniform(-4.0, 4.0)
         by_image[row["image_name"].strip()].append({
             "x":        float(row["x"]),
@@ -34,32 +45,43 @@ def parse_train_csv(csv_path: Path, rng: random.Random) -> dict[str, list[dict]]
             "class_id": class_id,
         })
 
+    if excluded:
+        print(f"  Excluded classes (intentional, not an error): {sorted(excluded)}")
     if unknown:
-        print(f"Unknown train class names (skipped): {unknown}")
+        print(f"  ⚠  Unknown class names not in CLASS_MAP (check config): {unknown}")
+
     return dict(by_image)
 
-# parse test csv (w/ header and per cell radius)
-# column names are also normalized just in case for formatting differences
-# uses the direct measured radius, no default/jitter compared to parse train csv
-# Returns a dict mapping image_name → list of annotation dicts: {"x": float, "y": float, "r": float, "class_id": int}
+
+# parse test csv (has header and per-cell radius column)
+# Uses the measured radius directly — no default/jitter.
+#
+# Returns: {image_name: [{"x", "y", "r", "class_id"}, ...]}
+
 def parse_test_csv(csv_path: Path) -> dict[str, list[dict]]:
     df = pd.read_csv(csv_path, dtype=str)
     df.columns = [c.strip().lower().replace(" ", "_") for c in df.columns]
 
-    # locate columns by keyword rather than position
     img_col  = next(c for c in df.columns if "image"  in c)
     name_col = next(c for c in df.columns if "name"   in c and "image" not in c)
     rad_col  = next(c for c in df.columns if "radius" in c)
 
     by_image: dict[str, list[dict]] = defaultdict(list)
-    unknown: set[str] = set()
+    unknown:  set[str] = set()
+    excluded: set[str] = set()
 
     for _, row in df.iterrows():
-        cls_raw  = str(row[name_col]).strip().lower()
-        class_id = CLASS_MAP.get(cls_raw)
-        if class_id is None:
+        cls_raw = str(row[name_col]).strip().lower()
+
+        if cls_raw not in CLASS_MAP:
             unknown.add(cls_raw)
             continue
+
+        class_id = CLASS_MAP[cls_raw]
+        if class_id is None:
+            excluded.add(cls_raw)
+            continue
+
         by_image[row[img_col].strip()].append({
             "x":        float(row["x"]),
             "y":        float(row["y"]),
@@ -67,6 +89,9 @@ def parse_test_csv(csv_path: Path) -> dict[str, list[dict]]:
             "class_id": class_id,
         })
 
+    if excluded:
+        print(f"  Excluded classes (intentional, not an error): {sorted(excluded)}")
     if unknown:
-        print(f"Unknown test class names (skipped): {unknown}")
+        print(f"  ⚠  Unknown class names not in CLASS_MAP (check config): {unknown}")
+
     return dict(by_image)

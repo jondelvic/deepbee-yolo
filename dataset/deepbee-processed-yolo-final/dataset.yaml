@@ -1,0 +1,10 @@
+path: D:/College/CS 321/deepbee-yolo/dataset/deepbee-processed-yolo-final
+train: images/train
+val: images/val
+test: images/eval
+nc: 4
+names:
+- capped
+- eggs
+- larves
+- other

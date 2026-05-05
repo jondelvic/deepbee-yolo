@@ -1,0 +1,13 @@
+split,class_id,class_name,annotations,pct
+train,0,capped,14923,29.13
+train,1,eggs,6104,11.91
+train,2,larves,10276,20.06
+train,3,other,19928,38.90
+val,0,capped,1694,12.54
+val,1,eggs,2711,20.07
+val,2,larves,5363,39.71
+val,3,other,3739,27.68
+eval,0,capped,3245,22.97
+eval,1,eggs,2789,19.74
+eval,2,larves,3540,25.05
+eval,3,other,4556,32.24
